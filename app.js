@@ -15,4 +15,4 @@ app.get('/',function (req,res){
     res.render('index')
 })
 
-app.listen(port,'172.16.1.200')
+app.listen(port)
