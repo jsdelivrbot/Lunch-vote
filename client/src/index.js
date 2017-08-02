@@ -6,19 +6,22 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import promise from "redux-promise";
 
 import reducers from "./reducers";
-import PostsIndex from "./components/posts_index";
-import PostsNew from "./components/posts_new";
-import PostsShow from "./components/posts_show";
+import Homepage from "./components/homepage";
+import Restaurants_new from "./components/restaurants_new";
+import Restaurants_show from "./components/restaurants_show";
 
+//middleware which deals with promise action
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
+
 ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers)}>
     <BrowserRouter>
       <div>
+        {/* which choose the first url that applies preventing conflict */}
         <Switch>
-          <Route path="/posts/new" component={PostsNew} />
-          <Route path="/posts/:id" component={PostsShow} />
-          <Route path="/" component={PostsIndex} />
+          <Route path="/restaurants/new" component={Restaurants_new} />
+          <Route path="/restaurants/:id" component={Restaurants_show} />
+          <Route path="/" component={Homepage} />
         </Switch>
       </div>
     </BrowserRouter>

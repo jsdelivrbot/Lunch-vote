@@ -5921,11 +5921,11 @@ function baseAssignValue(object, key, value) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DELETE_POST = exports.CREATE_POST = exports.FETCH_POST = exports.FETCH_POSTS = undefined;
-exports.fetchPosts = fetchPosts;
-exports.createPost = createPost;
-exports.fetchPost = fetchPost;
-exports.deletePost = deletePost;
+exports.DELETE_RESTAURANT = exports.CREATE_RESTAURANT = exports.FETCH_RESTAURANT = exports.FETCH_RESTAURANTS = undefined;
+exports.fetchRestaurants = fetchRestaurants;
+exports.createRestaurant = createRestaurant;
+exports.fetchRestaurant = fetchRestaurant;
+exports.deleteRestaurant = deleteRestaurant;
 
 var _axios = __webpack_require__(486);
 
@@ -5933,50 +5933,57 @@ var _axios2 = _interopRequireDefault(_axios);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var FETCH_POSTS = exports.FETCH_POSTS = "fetch_posts";
-var FETCH_POST = exports.FETCH_POST = "fetch_post";
-var CREATE_POST = exports.CREATE_POST = "create_post";
-var DELETE_POST = exports.DELETE_POST = "delete_post";
+// export string type as variable
+var FETCH_RESTAURANTS = exports.FETCH_RESTAURANTS = "fetch_restaurants";
+var FETCH_RESTAURANT = exports.FETCH_RESTAURANT = "fetch_restaurant";
+var CREATE_RESTAURANT = exports.CREATE_RESTAURANT = "create_restaurant";
+var DELETE_RESTAURANT = exports.DELETE_RESTAURANT = "delete_restaurant";
 
+//the online post,get,delete request url
 var ROOT_URL = "http://reduxblog.herokuapp.com/api";
 var API_KEY = "?key=PAPERCLIP1234";
 
-function fetchPosts() {
-  var request = _axios2.default.get(ROOT_URL + "/posts" + API_KEY);
+function fetchRestaurants() {
+  var request = _axios2.default
+  //use axios method to ask for promise request through url
+  .get(ROOT_URL + "/posts" + API_KEY);
 
   return {
-    type: FETCH_POSTS,
+    type: FETCH_RESTAURANTS,
     payload: request
   };
 }
 
-function createPost(values, callback) {
-  var request = _axios2.default.post(ROOT_URL + "/posts" + API_KEY, values).then(function () {
+function createRestaurant(values, callback) {
+  var request = _axios2.default.post(ROOT_URL + "/posts" + API_KEY, values)
+  //callback is used to wait for the request process complete
+  //and then get back to the homepage
+  .then(function () {
     return callback();
   });
 
   return {
-    type: CREATE_POST,
+    type: CREATE_RESTAURANT,
     payload: request
   };
 }
 
-function fetchPost(id) {
+function fetchRestaurant(id) {
   var request = _axios2.default.get(ROOT_URL + "/posts/" + id + API_KEY);
 
   return {
-    type: FETCH_POST,
+    type: FETCH_RESTAURANT,
     payload: request
   };
 }
 
-function deletePost(id, callback) {
+function deleteRestaurant(id, callback) {
   var request = _axios2.default.delete(ROOT_URL + "/posts/" + id + API_KEY).then(function () {
     return callback();
   });
 
   return {
-    type: DELETE_POST,
+    type: DELETE_RESTAURANT,
     payload: id
   };
 }
@@ -28653,20 +28660,21 @@ var _reducers = __webpack_require__(321);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
-var _posts_index = __webpack_require__(505);
+var _homepage = __webpack_require__(505);
 
-var _posts_index2 = _interopRequireDefault(_posts_index);
+var _homepage2 = _interopRequireDefault(_homepage);
 
-var _posts_new = __webpack_require__(506);
+var _restaurants_new = __webpack_require__(506);
 
-var _posts_new2 = _interopRequireDefault(_posts_new);
+var _restaurants_new2 = _interopRequireDefault(_restaurants_new);
 
-var _posts_show = __webpack_require__(507);
+var _restaurants_show = __webpack_require__(507);
 
-var _posts_show2 = _interopRequireDefault(_posts_show);
+var _restaurants_show2 = _interopRequireDefault(_restaurants_show);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//middleware which deals with promise action
 var createStoreWithMiddleware = (0, _redux.applyMiddleware)(_reduxPromise2.default)(_redux.createStore);
 
 _reactDom2.default.render(_react2.default.createElement(
@@ -28681,9 +28689,9 @@ _reactDom2.default.render(_react2.default.createElement(
       _react2.default.createElement(
         _reactRouterDom.Switch,
         null,
-        _react2.default.createElement(_reactRouterDom.Route, { path: "/posts/new", component: _posts_new2.default }),
-        _react2.default.createElement(_reactRouterDom.Route, { path: "/posts/:id", component: _posts_show2.default }),
-        _react2.default.createElement(_reactRouterDom.Route, { path: "/", component: _posts_index2.default })
+        _react2.default.createElement(_reactRouterDom.Route, { path: "/restaurants/new", component: _restaurants_new2.default }),
+        _react2.default.createElement(_reactRouterDom.Route, { path: "/restaurants/:id", component: _restaurants_show2.default }),
+        _react2.default.createElement(_reactRouterDom.Route, { path: "/", component: _homepage2.default })
       )
     )
   )
@@ -42491,14 +42499,15 @@ var _redux = __webpack_require__(37);
 
 var _reduxForm = __webpack_require__(158);
 
-var _reducer_posts = __webpack_require__(485);
+var _reducer_restaurants = __webpack_require__(485);
 
-var _reducer_posts2 = _interopRequireDefault(_reducer_posts);
+var _reducer_restaurants2 = _interopRequireDefault(_reducer_restaurants);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//reducer item for the whole application
 var rootReducer = (0, _redux.combineReducers)({
-  posts: _reducer_posts2.default,
+  restaurants: _reducer_restaurants2.default,
   form: _reduxForm.reducer
 });
 
@@ -50726,12 +50735,16 @@ exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
 
+  //do the action according to the action.type
   switch (action.type) {
-    case _actions.DELETE_POST:
+    case _action_restaurants.DELETE_RESTAURANT:
+      //remove the id of the delete post
       return _lodash2.default.omit(state, action.payload);
-    case _actions.FETCH_POST:
+    case _action_restaurants.FETCH_RESTAURANT:
+      //show the selected restaurants according to the id
       return _extends({}, state, _defineProperty({}, action.payload.data.id, action.payload.data));
-    case _actions.FETCH_POSTS:
+    case _action_restaurants.FETCH_RESTAURANTS:
+      //display data according to their id， use id as data's key
       return _lodash2.default.mapKeys(action.payload.data, "id");
     default:
       return state;
@@ -50742,7 +50755,7 @@ var _lodash = __webpack_require__(187);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _actions = __webpack_require__(62);
+var _action_restaurants = __webpack_require__(62);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51596,7 +51609,7 @@ var _reactRedux = __webpack_require__(15);
 
 var _reactRouterDom = __webpack_require__(53);
 
-var _actions = __webpack_require__(62);
+var _action_restaurants = __webpack_require__(62);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51606,31 +51619,34 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PostsIndex = function (_Component) {
-  _inherits(PostsIndex, _Component);
+var Homepage = function (_Component) {
+  _inherits(Homepage, _Component);
 
-  function PostsIndex() {
-    _classCallCheck(this, PostsIndex);
+  function Homepage() {
+    _classCallCheck(this, Homepage);
 
-    return _possibleConstructorReturn(this, (PostsIndex.__proto__ || Object.getPrototypeOf(PostsIndex)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Homepage.__proto__ || Object.getPrototypeOf(Homepage)).apply(this, arguments));
   }
 
-  _createClass(PostsIndex, [{
+  _createClass(Homepage, [{
     key: "componentDidMount",
+
+    // when this component is showed in the DOM, immediately this method will
+    // be called. Thus, we can fetch the data when user go to that page.
     value: function componentDidMount() {
-      this.props.fetchPosts();
+      this.props.fetchRestaurants();
     }
   }, {
-    key: "renderPosts",
-    value: function renderPosts() {
-      return _lodash2.default.map(this.props.posts, function (post) {
+    key: "renderRestaurants",
+    value: function renderRestaurants() {
+      return _lodash2.default.map(this.props.restaurants, function (restaurant) {
         return _react2.default.createElement(
           "li",
-          { className: "list-group-item", key: post.id },
+          { className: "list-group-item", key: restaurant.id },
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: "/posts/" + post.id },
-            post.title
+            { to: "/restaurants/" + restaurant.id },
+            restaurant.title
           )
         );
       });
@@ -51646,32 +51662,46 @@ var PostsIndex = function (_Component) {
           { className: "text-xs-right" },
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { className: "btn btn-primary", to: "/posts/new" },
-            "Add a Post"
+            { className: "btn btn-primary", to: "/restaurants/new" },
+            "Add a Restaurant"
           )
         ),
         _react2.default.createElement(
           "h3",
           null,
-          "Posts"
+          "Restaurants"
         ),
         _react2.default.createElement(
           "ul",
           { className: "list-group" },
-          this.renderPosts()
+          this.renderRestaurants()
         )
       );
     }
   }]);
 
-  return PostsIndex;
+  return Homepage;
 }(_react.Component);
 
+//in order to give the homepage component the restaurants state from reducer
+//restaurants will be inside props of homepage
+
+
 function mapStateToProps(state) {
-  return { posts: state.posts };
+  return { restaurants: state.restaurants };
 }
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchPosts: _actions.fetchPosts })(PostsIndex);
+//{ fetchRestaurants } ====
+// // Anything returned from this function will end up as props
+// on the BookList container
+// "function mapDispatchToProps(dispatch) {"
+// Whenever selectBook is called, the result shoudl be passed
+// to all of our reducers
+//    "return bindActionCreators({ fetchRestaurants: fetchRestaurants }, dispatch);"
+// "}"
+
+//connect action and state together
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchRestaurants: _action_restaurants.fetchRestaurants })(Homepage);
 
 /***/ }),
 /* 506 */
@@ -51698,7 +51728,7 @@ var _reactRouterDom = __webpack_require__(53);
 
 var _reactRedux = __webpack_require__(15);
 
-var _actions = __webpack_require__(62);
+var _action_restaurants = __webpack_require__(62);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51708,21 +51738,23 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PostsNew = function (_Component) {
-  _inherits(PostsNew, _Component);
+var RestaurantsNew = function (_Component) {
+  _inherits(RestaurantsNew, _Component);
 
-  function PostsNew() {
-    _classCallCheck(this, PostsNew);
+  function RestaurantsNew() {
+    _classCallCheck(this, RestaurantsNew);
 
-    return _possibleConstructorReturn(this, (PostsNew.__proto__ || Object.getPrototypeOf(PostsNew)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (RestaurantsNew.__proto__ || Object.getPrototypeOf(RestaurantsNew)).apply(this, arguments));
   }
 
-  _createClass(PostsNew, [{
+  _createClass(RestaurantsNew, [{
     key: "renderField",
     value: function renderField(field) {
+      // this is used to abbreviate field.meta.touched to touched
       var _field$meta = field.meta,
           touched = _field$meta.touched,
           error = _field$meta.error;
+      //if user finish, there will be validate check
 
       var className = "form-group " + (touched && error ? "has-danger" : "");
 
@@ -51742,54 +51774,66 @@ var PostsNew = function (_Component) {
         )
       );
     }
+
+    //values is just what users just wrote on the website
+
   }, {
     key: "onSubmit",
     value: function onSubmit(values) {
       var _this2 = this;
 
-      this.props.createPost(values, function () {
+      // submit button and go back to index using callback
+      this.props.createRestaurant(values, function () {
         _this2.props.history.push("/");
       });
     }
   }, {
     key: "render",
     value: function render() {
+      // the handleSubmit is passed to this component's props by Reduxform
+      // connection to this file in the bottom of the file
       var handleSubmit = this.props.handleSubmit;
 
 
-      return _react2.default.createElement(
-        "form",
-        { onSubmit: handleSubmit(this.onSubmit.bind(this)) },
-        _react2.default.createElement(_reduxForm.Field, {
-          label: "Title For Post",
-          name: "title",
-          component: this.renderField
-        }),
-        _react2.default.createElement(_reduxForm.Field, {
-          label: "Categories",
-          name: "categories",
-          component: this.renderField
-        }),
-        _react2.default.createElement(_reduxForm.Field, {
-          label: "Post Content",
-          name: "content",
-          component: this.renderField
-        }),
+      return (
+        // when reduxform use handleSubmit to check everything and then
+        // use onsubmit to call "createRestaurant" to post
         _react2.default.createElement(
-          "button",
-          { type: "submit", className: "btn btn-primary" },
-          "Submit"
-        ),
-        _react2.default.createElement(
-          _reactRouterDom.Link,
-          { to: "/", className: "btn btn-danger" },
-          "Cancel"
+          "form",
+          { onSubmit: handleSubmit(this.onSubmit.bind(this)) },
+          _react2.default.createElement(_reduxForm.Field
+          // some attribute of field which can be used
+          , { label: "Title For Restaurants",
+            name: "title"
+            // this is were it interacts with the user
+            , component: this.renderField
+          }),
+          _react2.default.createElement(_reduxForm.Field, {
+            label: "Categories",
+            name: "categories",
+            component: this.renderField
+          }),
+          _react2.default.createElement(_reduxForm.Field, {
+            label: "Restaurants Content",
+            name: "content",
+            component: this.renderField
+          }),
+          _react2.default.createElement(
+            "button",
+            { type: "submit", className: "btn btn-primary" },
+            "Submit"
+          ),
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: "/", className: "btn btn-danger" },
+            "Cancel"
+          )
         )
       );
     }
   }]);
 
-  return PostsNew;
+  return RestaurantsNew;
 }(_react.Component);
 
 function validate(values) {
@@ -51813,9 +51857,10 @@ function validate(values) {
 }
 
 exports.default = (0, _reduxForm.reduxForm)({
+  //these are configurations for reduxform
   validate: validate,
-  form: "PostsNewForm"
-})((0, _reactRedux.connect)(null, { createPost: _actions.createPost })(PostsNew));
+  form: "RestaurantsNewForm" // name of the form
+})((0, _reactRedux.connect)(null, { createRestaurant: _action_restaurants.createRestaurant })(RestaurantsNew));
 
 /***/ }),
 /* 507 */
@@ -51838,7 +51883,7 @@ var _reactRedux = __webpack_require__(15);
 
 var _reactRouterDom = __webpack_require__(53);
 
-var _actions = __webpack_require__(62);
+var _action_restaurants = __webpack_require__(62);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51848,21 +51893,22 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PostsShow = function (_Component) {
-  _inherits(PostsShow, _Component);
+var RestaurantsShow = function (_Component) {
+  _inherits(RestaurantsShow, _Component);
 
-  function PostsShow() {
-    _classCallCheck(this, PostsShow);
+  function RestaurantsShow() {
+    _classCallCheck(this, RestaurantsShow);
 
-    return _possibleConstructorReturn(this, (PostsShow.__proto__ || Object.getPrototypeOf(PostsShow)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (RestaurantsShow.__proto__ || Object.getPrototypeOf(RestaurantsShow)).apply(this, arguments));
   }
 
-  _createClass(PostsShow, [{
+  _createClass(RestaurantsShow, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      //this.props.match.params is provided from the url and react-router
       var id = this.props.match.params.id;
 
-      this.props.fetchPost(id);
+      this.props.fetchRestaurant(id);
     }
   }, {
     key: "onDeleteClick",
@@ -51872,17 +51918,20 @@ var PostsShow = function (_Component) {
       var id = this.props.match.params.id;
 
 
-      this.props.deletePost(id, function () {
+      this.props.deleteRestaurant(id, function () {
         _this2.props.history.push("/");
       });
     }
   }, {
     key: "render",
     value: function render() {
-      var post = this.props.post;
+      // variable restaurant is given by mapStateToProps funtcion below
+      // which get the specific restaurant out of the list
+      var restaurant = this.props.restaurant;
 
+      // To wait for initialize
 
-      if (!post) {
+      if (!restaurant) {
         return _react2.default.createElement(
           "div",
           null,
@@ -51909,33 +51958,34 @@ var PostsShow = function (_Component) {
         _react2.default.createElement(
           "h3",
           null,
-          post.title
+          restaurant.title
         ),
         _react2.default.createElement(
           "h6",
           null,
           "Categories: ",
-          post.categories
+          restaurant.categories
         ),
         _react2.default.createElement(
           "p",
           null,
-          post.content
+          restaurant.content
         )
       );
     }
   }]);
 
-  return PostsShow;
+  return RestaurantsShow;
 }(_react.Component);
 
 function mapStateToProps(_ref, ownProps) {
-  var posts = _ref.posts;
+  var restaurants = _ref.restaurants;
 
-  return { post: posts[ownProps.match.params.id] };
+  //
+  return { restaurant: restaurants[ownProps.match.params.id] };
 }
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchPost: _actions.fetchPost, deletePost: _actions.deletePost })(PostsShow);
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchRestaurant: _action_restaurants.fetchRestaurant, deleteRestaurant: _action_restaurants.deleteRestaurant })(RestaurantsShow);
 
 /***/ })
 /******/ ]);
