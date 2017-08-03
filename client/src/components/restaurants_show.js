@@ -37,16 +37,15 @@ class RestaurantsShow extends Component {
         >
           Delete Post
         </button>
-        <h3>{restaurant.title}</h3>
-        <h6>Categories: {restaurant.categories}</h6>
-        <p>{restaurant.content}</p>
+        <h3>Name : {restaurant.name}</h3>
+        <h6>Address: {restaurant.address}</h6>
+        <p>Link : {restaurant.link}</p>
       </div>
     );
   }
 }
 
 function mapStateToProps({ restaurants }, ownProps) {
-  //
   return { restaurant: restaurants[ownProps.match.params.id] };
 }
 

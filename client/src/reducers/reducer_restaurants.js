@@ -10,10 +10,10 @@ export default function(state = {}, action) {
       return _.omit(state, action.payload);
     case FETCH_RESTAURANT:
       //show the selected restaurants according to the id
-      return { ...state, [action.payload.data.id]: action.payload.data };
+      return { ...state, [action.payload.data._id]: action.payload.data };
     case FETCH_RESTAURANTS:
       //display data according to their id， use id as data's key
-      return _.mapKeys(action.payload.data, "id");
+      return _.mapKeys(action.payload.data, "_id");
     default:
       return state;
   }

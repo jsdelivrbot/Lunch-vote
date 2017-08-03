@@ -44,19 +44,19 @@ class RestaurantsNew extends Component {
       <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
         <Field
           // some attribute of field which can be used
-          label="Title For Restaurants"
-          name="title"
+          label="Name For Restaurants"
+          name="name"
           // this is were it interacts with the user
           component={this.renderField}
         />
         <Field
-          label="Categories"
-          name="categories"
+          label="Address of Restaurants"
+          name="address"
           component={this.renderField}
         />
         <Field
-          label="Restaurants Content"
-          name="content"
+          label="Restaurants Link"
+          name="link"
           component={this.renderField}
         />
         <button type="submit" className="btn btn-primary">Submit</button>
@@ -71,14 +71,14 @@ function validate(values) {
   const errors = {};
 
   // Validate the inputs from 'values'
-  if (!values.title) {
-    errors.title = "Enter a title";
+  if (!values.name) {
+    errors.title = "Enter a name";
   }
-  if (!values.categories) {
-    errors.categories = "Enter some categories";
+  if (!values.address) {
+    errors.categories = "Enter the address";
   }
-  if (!values.content) {
-    errors.content = "Enter some content please";
+  if (!values.link) {
+    errors.content = "Enter a link";
   }
 
   // If errors is empty, the form is fine to submit

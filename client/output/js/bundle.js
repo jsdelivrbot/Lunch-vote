@@ -5940,13 +5940,11 @@ var CREATE_RESTAURANT = exports.CREATE_RESTAURANT = "create_restaurant";
 var DELETE_RESTAURANT = exports.DELETE_RESTAURANT = "delete_restaurant";
 
 //the online post,get,delete request url
-var ROOT_URL = "http://reduxblog.herokuapp.com/api";
-var API_KEY = "?key=PAPERCLIP1234";
-
+var ROOT_URL = "http://vote-lunch.herokuapp.com/api";
 function fetchRestaurants() {
   var request = _axios2.default
   //use axios method to ask for promise request through url
-  .get(ROOT_URL + "/posts" + API_KEY);
+  .get(ROOT_URL + "/restaurants");
 
   return {
     type: FETCH_RESTAURANTS,
@@ -5955,7 +5953,7 @@ function fetchRestaurants() {
 }
 
 function createRestaurant(values, callback) {
-  var request = _axios2.default.post(ROOT_URL + "/posts" + API_KEY, values)
+  var request = _axios2.default.post(ROOT_URL + "/restaurants", values)
   //callback is used to wait for the request process complete
   //and then get back to the homepage
   .then(function () {
@@ -5969,7 +5967,7 @@ function createRestaurant(values, callback) {
 }
 
 function fetchRestaurant(id) {
-  var request = _axios2.default.get(ROOT_URL + "/posts/" + id + API_KEY);
+  var request = _axios2.default.get(ROOT_URL + "/restaurants/" + id);
 
   return {
     type: FETCH_RESTAURANT,
@@ -5978,7 +5976,7 @@ function fetchRestaurant(id) {
 }
 
 function deleteRestaurant(id, callback) {
-  var request = _axios2.default.delete(ROOT_URL + "/posts/" + id + API_KEY).then(function () {
+  var request = _axios2.default.delete(ROOT_URL + "/restaurants/" + id).then(function () {
     return callback();
   });
 
@@ -50742,10 +50740,10 @@ exports.default = function () {
       return _lodash2.default.omit(state, action.payload);
     case _action_restaurants.FETCH_RESTAURANT:
       //show the selected restaurants according to the id
-      return _extends({}, state, _defineProperty({}, action.payload.data.id, action.payload.data));
+      return _extends({}, state, _defineProperty({}, action.payload.data._id, action.payload.data));
     case _action_restaurants.FETCH_RESTAURANTS:
       //display data according to their id， use id as data's key
-      return _lodash2.default.mapKeys(action.payload.data, "id");
+      return _lodash2.default.mapKeys(action.payload.data, "_id");
     default:
       return state;
   }
@@ -51642,11 +51640,11 @@ var Homepage = function (_Component) {
       return _lodash2.default.map(this.props.restaurants, function (restaurant) {
         return _react2.default.createElement(
           "li",
-          { className: "list-group-item", key: restaurant.id },
+          { className: "list-group-item", key: restaurant._id },
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: "/restaurants/" + restaurant.id },
-            restaurant.title
+            { to: "/restaurants/" + restaurant._id },
+            restaurant.name
           )
         );
       });
@@ -51803,19 +51801,19 @@ var RestaurantsNew = function (_Component) {
           { onSubmit: handleSubmit(this.onSubmit.bind(this)) },
           _react2.default.createElement(_reduxForm.Field
           // some attribute of field which can be used
-          , { label: "Title For Restaurants",
-            name: "title"
+          , { label: "Name For Restaurants",
+            name: "name"
             // this is were it interacts with the user
             , component: this.renderField
           }),
           _react2.default.createElement(_reduxForm.Field, {
-            label: "Categories",
-            name: "categories",
+            label: "Address of Restaurants",
+            name: "address",
             component: this.renderField
           }),
           _react2.default.createElement(_reduxForm.Field, {
-            label: "Restaurants Content",
-            name: "content",
+            label: "Restaurants Link",
+            name: "link",
             component: this.renderField
           }),
           _react2.default.createElement(
@@ -51841,14 +51839,14 @@ function validate(values) {
   var errors = {};
 
   // Validate the inputs from 'values'
-  if (!values.title) {
-    errors.title = "Enter a title";
+  if (!values.name) {
+    errors.title = "Enter a name";
   }
-  if (!values.categories) {
-    errors.categories = "Enter some categories";
+  if (!values.address) {
+    errors.categories = "Enter the address";
   }
-  if (!values.content) {
-    errors.content = "Enter some content please";
+  if (!values.link) {
+    errors.content = "Enter a link";
   }
 
   // If errors is empty, the form is fine to submit
@@ -51958,18 +51956,20 @@ var RestaurantsShow = function (_Component) {
         _react2.default.createElement(
           "h3",
           null,
-          restaurant.title
+          "Name : ",
+          restaurant.name
         ),
         _react2.default.createElement(
           "h6",
           null,
-          "Categories: ",
-          restaurant.categories
+          "Address: ",
+          restaurant.address
         ),
         _react2.default.createElement(
           "p",
           null,
-          restaurant.content
+          "Link : ",
+          restaurant.link
         )
       );
     }
@@ -51981,7 +51981,6 @@ var RestaurantsShow = function (_Component) {
 function mapStateToProps(_ref, ownProps) {
   var restaurants = _ref.restaurants;
 
-  //
   return { restaurant: restaurants[ownProps.match.params.id] };
 }
 

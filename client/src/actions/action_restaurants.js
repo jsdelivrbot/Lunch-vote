@@ -7,11 +7,9 @@ export const CREATE_RESTAURANT  = "create_restaurant";
 export const DELETE_RESTAURANT  = "delete_restaurant";
 
 //the online post,get,delete request url
-const ROOT_URL = "http://reduxblog.herokuapp.com/api";
-const API_KEY = "?key=PAPERCLIP1234";
-
+const ROOT_URL = "http://vote-lunch.herokuapp.com/api";
 export function fetchRestaurants() {
-  const request = axios.get(`${ROOT_URL}/posts${API_KEY}`);
+  const request = axios.get(`${ROOT_URL}/restaurants`);
 
   return {
     type: FETCH_RESTAURANTS,
@@ -22,7 +20,7 @@ export function fetchRestaurants() {
 export function createRestaurant(values, callback) {
   const request = axios
     //use axios method to ask for promise request through url
-    .post(`${ROOT_URL}/posts${API_KEY}`, values)
+    .post(`${ROOT_URL}/restaurants`, values)
     //callback is used to wait for the request process complete
     //and then get back to the homepage
     .then(() => callback());
@@ -34,7 +32,7 @@ export function createRestaurant(values, callback) {
 }
 
 export function fetchRestaurant(id) {
-  const request = axios.get(`${ROOT_URL}/posts/${id}${API_KEY}`);
+  const request = axios.get(`${ROOT_URL}/restaurants/${id}`);
 
   return {
     type: FETCH_RESTAURANT,
@@ -44,7 +42,7 @@ export function fetchRestaurant(id) {
 
 export function deleteRestaurant(id, callback) {
   const request = axios
-    .delete(`${ROOT_URL}/posts/${id}${API_KEY}`)
+    .delete(`${ROOT_URL}/restaurants/${id}`)
     .then(() => callback());
 
   return {

@@ -14,10 +14,10 @@ class Homepage extends Component {
   renderRestaurants() {
     return _.map(this.props.restaurants, restaurant => {
       return (
-        <li className="list-group-item" key={restaurant.id}>
+        <li className="list-group-item" key={restaurant._id}>
           {/* display every restaurant's title and add link to it */}
-          <Link to={`/restaurants/${restaurant.id}`}>
-            {restaurant.title}
+          <Link to={`/restaurants/${restaurant._id}`}>
+            {restaurant.name}
           </Link>
         </li>
       );
