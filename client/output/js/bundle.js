@@ -5940,7 +5940,7 @@ var CREATE_RESTAURANT = exports.CREATE_RESTAURANT = "create_restaurant";
 var DELETE_RESTAURANT = exports.DELETE_RESTAURANT = "delete_restaurant";
 
 //the online post,get,delete request url
-var ROOT_URL = "http://vote-lunch.herokuapp.com/api";
+var ROOT_URL = "https://vote-lunch.herokuapp.com/api";
 function fetchRestaurants() {
   var request = _axios2.default
   //use axios method to ask for promise request through url
