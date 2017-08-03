@@ -7,7 +7,7 @@ export const CREATE_RESTAURANT  = "create_restaurant";
 export const DELETE_RESTAURANT  = "delete_restaurant";
 
 //the online post,get,delete request url
-const ROOT_URL = "http://vote-lunch.herokuapp.com/api";
+const ROOT_URL = "https://vote-lunch.herokuapp.com/api";
 export function fetchRestaurants() {
   const request = axios.get(`${ROOT_URL}/restaurants`);
 
