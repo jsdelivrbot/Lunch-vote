@@ -72,13 +72,13 @@ function validate(values) {
 
   // Validate the inputs from 'values'
   if (!values.name) {
-    errors.title = "Enter a name";
+    errors.name = "Enter a name";
   }
   if (!values.address) {
-    errors.categories = "Enter the address";
+    errors.address = "Enter the address";
   }
   if (!values.link) {
-    errors.content = "Enter a link";
+    errors.link = "Enter a link";
   }
 
   // If errors is empty, the form is fine to submit
