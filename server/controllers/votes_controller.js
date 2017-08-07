@@ -58,7 +58,7 @@ function get_startend_time(){
             //Set start to yesterday's Los Angeles' time 12:30 pm
             var now_start = moment().tz('America/Los_Angeles') ;
             //first change it to tomorrow
-            now_start.substract(1, 'days')
+            now_start.subtract(1, 'days')
             now_start.set(
                 {
                 'hour': 12, 
@@ -82,7 +82,7 @@ function get_startend_time(){
         //Set start to yesterday's Los Angeles' time 12:30 pm
     var now_start = moment().tz('America/Los_Angeles') ;
         //first change it to tomorrow
-        now_start.substract(1, 'days')
+        now_start.subtract(1, 'days')
         now_start.set(
             {
             'hour': 12, 
