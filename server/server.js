@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const routes = require('./routes/routes');
 const bodyParser = require('body-parser');
 
-var Restaurant = require('./db/Restaurant');
+var Vote = require('./db/Vote');
 
 // connect to the mongodb local or on heroku
 // URI is provided by heroku in the .env file
@@ -13,7 +13,6 @@ mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI ,{
   useMongoClient: true,
 });
-
 
 var app = express();
 var port = process.env.PORT || 3000;
@@ -32,7 +31,6 @@ app.get('/',function (req,res){
     res.render('index')
 })
 
-//use this to complete all request 
 routes(app);
 
 app.listen(port)
