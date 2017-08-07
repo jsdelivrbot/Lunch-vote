@@ -26,6 +26,11 @@ var VoteSchema = new Schema({
 		type : [String,String],
 		index : 1,
 		unique : true,
+	},
+	restaurant_id : {
+		type : String,
+		index : 1,
+		unique : true,
 	}
 });
 

@@ -54,11 +54,6 @@ class RestaurantsNew extends Component {
           name="address"
           component={this.renderField}
         />
-        <Field
-          label="Restaurants Link"
-          name="link"
-          component={this.renderField}
-        />
         <button type="submit" className="btn btn-primary">Submit</button>
         <Link to="/" className="btn btn-danger">Cancel</Link>
       </form>
@@ -76,9 +71,6 @@ function validate(values) {
   }
   if (!values.address) {
     errors.address = "Enter the address";
-  }
-  if (!values.link) {
-    errors.link = "Enter a link";
   }
 
   // If errors is empty, the form is fine to submit

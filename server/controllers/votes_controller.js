@@ -126,7 +126,8 @@ module.exports = {
             name: vote.name,
             date: new Date(),
             agree: [vote.name_restaurant,vote.id_restaurant],
-            disagree:["",""]
+            disagree:["",""],
+            restaurant_id : vote.id_restaurant
         });
 
         new_vote.save((err) => {
@@ -144,12 +145,12 @@ module.exports = {
             name: vote.name,
             date: new Date(),
             agree : ["",""],
-            disagree:[vote.name_restaurant,vote.id_restaurant]
+            disagree:[vote.name_restaurant,vote.id_restaurant],
+            restaurant_id : vote.id_restaurant
         });
 
         new_vote.save((err) => {
             if (err) throw err;
-
             console.log('vote saved!');
         });
  

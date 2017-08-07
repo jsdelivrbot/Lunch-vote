@@ -67600,11 +67600,6 @@ var RestaurantsNew = function (_Component) {
             name: "address",
             component: this.renderField
           }),
-          _react2.default.createElement(_reduxForm.Field, {
-            label: "Restaurants Link",
-            name: "link",
-            component: this.renderField
-          }),
           _react2.default.createElement(
             "button",
             { type: "submit", className: "btn btn-primary" },
@@ -67633,9 +67628,6 @@ function validate(values) {
   }
   if (!values.address) {
     errors.address = "Enter the address";
-  }
-  if (!values.link) {
-    errors.link = "Enter a link";
   }
 
   // If errors is empty, the form is fine to submit
@@ -67831,22 +67823,16 @@ var RestaurantsShow = function (_Component) {
           "Delete Post"
         ),
         _react2.default.createElement(
-          "h3",
+          "h1",
           null,
           "Name : ",
           restaurant.name
         ),
         _react2.default.createElement(
-          "h6",
+          "h1",
           null,
           "Address: ",
           restaurant.address
-        ),
-        _react2.default.createElement(
-          "p",
-          null,
-          "Link : ",
-          restaurant.link
         ),
         _react2.default.createElement(_reduxForm.Field, {
           label: "Name of Voter",

@@ -94,9 +94,8 @@ class RestaurantsShow extends Component {
         >
           Delete Post
         </button>
-        <h3>Name : {restaurant.name}</h3>
-        <h6>Address: {restaurant.address}</h6>
-        <p>Link : {restaurant.link}</p>
+        <h1>Name : {restaurant.name}</h1>
+        <h1>Address: {restaurant.address}</h1>
         <Field
           label="Name of Voter"
           name="name"

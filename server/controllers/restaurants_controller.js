@@ -1,4 +1,5 @@
 const Restaurant = require('../db/Restaurant.js')
+const Vote= require('../db/Vote.js');
 
 module.exports = {
 
@@ -21,7 +22,6 @@ module.exports = {
         var new_restaurant = Restaurant({
             name: restaurant.name,
 	        address: restaurant.address,
-            link: restaurant.link
         });
 
         //save the new restaurant to Mongodb
@@ -31,14 +31,7 @@ module.exports = {
             console.log('restaurant saved!');
         });
         
-        //find the recent added object send back to client
-        Restaurant.find({name : restaurant.name},function(err,restaurant){
-                if(err){
-                    console.log(err);
-                }else{
-                    res.json(restaurant);
-                }
-        });
+        res.sendStatus(200);
     },
 
     delete(req,res){
@@ -51,7 +44,11 @@ module.exports = {
                     res.json(restaurant);
                 }
         });
-        
+        Vote.remove({restaurant_id : restaurant_id},function(err){
+                if(err){
+                    console.log(err);
+                }
+        });
     },
 
     view(req,res){
