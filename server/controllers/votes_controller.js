@@ -135,7 +135,7 @@ module.exports = {
             console.log('vote saved!');
         });
         
-        res.status(200);
+        res.sendStatus(200);
     },
 
     create_against(req,res){
@@ -153,6 +153,6 @@ module.exports = {
             console.log('vote saved!');
         });
  
-        res.status(200);
+        res.sendStatus(200);
     }
 }
