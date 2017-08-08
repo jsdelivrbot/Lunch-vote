@@ -32,6 +32,7 @@ module.exports = {
         });
         
         res.sendStatus(200);
+        res.send("Success");
     },
 
     delete(req,res){

@@ -137,6 +137,7 @@ module.exports = {
         });
         
         res.sendStatus(200);
+        res.send("Success");
     },
 
     create_against(req,res){
@@ -155,5 +156,6 @@ module.exports = {
         });
  
         res.sendStatus(200);
+        res.send("Success");
     }
 }
