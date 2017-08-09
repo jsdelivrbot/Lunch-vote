@@ -66798,17 +66798,19 @@ var Homepage = function (_Component) {
 
       //set the inital ranking to 1
       if (score_arr[0]) {
-        var ranking = 1;
-        score_arr[0].rank = ranking;
+        var ranking_all = 1;
+        var ranking_cur = 1;
+        score_arr[0].rank = ranking_cur;
         for (var index = 1; index < score_arr.length; index++) {
           var score_rest_prev = score_arr[index];
           var score_rest_cur = score_arr[index - 1];
           if (score_rest_cur.score == score_rest_prev.score) {
-            score_arr[index].rank = ranking;
-            ranking++;
+            score_arr[index].rank = ranking_cur;
+            ranking_all++;
           } else {
-            ranking++;
-            score_arr[index].rank = ranking;
+            ranking_all++;
+            ranking_cur = ranking_all;
+            score_arr[index].rank = ranking_cur;
           }
         }
       }
