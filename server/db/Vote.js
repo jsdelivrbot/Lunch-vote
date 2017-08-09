@@ -17,17 +17,19 @@ var VoteSchema = new Schema({
 		unique : true,
 		required : true
 	},
-	agree :{
-		type : [String,String],
+	action :{
+		type : String,
 		index : 1,
 		unique : true,
 	},
-	disagree :{
-		type : [String,String],
-		index : 1,
-		unique : true,
-	},
+
 	restaurant_id : {
+		type : String,
+		index : 1,
+		unique : true,
+	},
+
+	restaurant_name : {
 		type : String,
 		index : 1,
 		unique : true,

@@ -10442,11 +10442,12 @@ function baseAssignValue(object, key, value) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DELETE_RESTAURANT = exports.CREATE_RESTAURANT = exports.FETCH_RESTAURANT = exports.FETCH_RESTAURANTS = undefined;
+exports.EDIT_RESTAURANT = exports.DELETE_RESTAURANT = exports.CREATE_RESTAURANT = exports.FETCH_RESTAURANT = exports.FETCH_RESTAURANTS = undefined;
 exports.fetchRestaurants = fetchRestaurants;
 exports.createRestaurant = createRestaurant;
 exports.fetchRestaurant = fetchRestaurant;
 exports.deleteRestaurant = deleteRestaurant;
+exports.editRestaurant = editRestaurant;
 
 var _axios = __webpack_require__(190);
 
@@ -10459,9 +10460,11 @@ var FETCH_RESTAURANTS = exports.FETCH_RESTAURANTS = "fetch_restaurants";
 var FETCH_RESTAURANT = exports.FETCH_RESTAURANT = "fetch_restaurant";
 var CREATE_RESTAURANT = exports.CREATE_RESTAURANT = "create_restaurant";
 var DELETE_RESTAURANT = exports.DELETE_RESTAURANT = "delete_restaurant";
+var EDIT_RESTAURANT = exports.EDIT_RESTAURANT = "edit_restaurant";
 
 //the online post,get,delete request url
-var ROOT_URL = "https://vote-lunch.herokuapp.com/api";
+// const ROOT_URL = "http://vote-lunch.herokuapp.com/api";
+var ROOT_URL = "http://172.16.1.200:3000/api";
 
 function fetchRestaurants() {
   var request = _axios2.default
@@ -10504,6 +10507,17 @@ function deleteRestaurant(id, callback) {
 
   return {
     type: DELETE_RESTAURANT,
+    payload: id
+  };
+}
+
+function editRestaurant(id, values, callback) {
+  var request = _axios2.default.put(ROOT_URL + "/restaurants/" + id + "/edit", values).then(function () {
+    return callback();
+  });
+
+  return {
+    type: EDIT_RESTAURANT,
     payload: id
   };
 }
@@ -26245,7 +26259,7 @@ var CREATE_VOTE_AGAINST = exports.CREATE_VOTE_AGAINST = "create_vote_against";
 var FETCH_VOTES = exports.FETCH_VOTES = "fetch_votes";
 
 //the online post,get,delete request url
-var ROOT_URL = "https://vote-lunch.herokuapp.com/api";
+var ROOT_URL = "http://172.16.1.200:3000/api";
 
 function createVote_for(values, callback) {
   var request = _axios2.default
@@ -43602,6 +43616,10 @@ var _restaurants_show = __webpack_require__(627);
 
 var _restaurants_show2 = _interopRequireDefault(_restaurants_show);
 
+var _restaurants_edit = __webpack_require__(628);
+
+var _restaurants_edit2 = _interopRequireDefault(_restaurants_edit);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //middleware which deals with promise action
@@ -43619,6 +43637,7 @@ _reactDom2.default.render(_react2.default.createElement(
       _react2.default.createElement(
         _reactRouterDom.Switch,
         null,
+        _react2.default.createElement(_reactRouterDom.Route, { path: "/restaurants/:id/edit", component: _restaurants_edit2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { path: "/restaurants/new", component: _restaurants_new2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { path: "/restaurants/:id", component: _restaurants_show2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { path: "/", component: _homepage2.default })
@@ -66638,33 +66657,28 @@ var Homepage = function (_Component) {
             "td",
             null,
             function () {
-              switch (vote.agree[0]) {
-                case "":
+              switch (vote.action) {
+                case "disagree":
                   return _react2.default.createElement(
                     "font",
                     { color: "red" },
                     "Against"
                   );
-                default:
+                case "agree":
                   return _react2.default.createElement(
                     "font",
                     { color: "green" },
                     "For"
                   );
+                case "default":
+                  return error;
               }
             }()
           ),
           _react2.default.createElement(
             "td",
             null,
-            function () {
-              switch (vote.agree[0]) {
-                case "":
-                  return vote.disagree[0];
-                default:
-                  return vote.agree[0];
-              }
-            }()
+            vote.restaurant_name
           ),
           _react2.default.createElement(
             "td",
@@ -66729,6 +66743,11 @@ var Homepage = function (_Component) {
           _react2.default.createElement(
             "td",
             null,
+            score_res.rank
+          ),
+          _react2.default.createElement(
+            "td",
+            null,
             score_res.name
           ),
           _react2.default.createElement(
@@ -66745,8 +66764,8 @@ var Homepage = function (_Component) {
       var score_arr = [];
       _lodash2.default.map(this.props.votes, function (vote) {
         //when it is For
-        if (vote.agree[0] == "") {
-          var name_scoreb_d = vote.disagree[0];
+        if (vote.action == "disagree") {
+          var name_scoreb_d = vote.restaurant_name;
           var index = _lodash2.default.findIndex(score_arr, function (rest) {
             return rest.name == name_scoreb_d;
           });
@@ -66760,7 +66779,7 @@ var Homepage = function (_Component) {
         }
         //when is is Against
         else {
-            var name_scoreb_a = vote.agree[0];
+            var name_scoreb_a = vote.restaurant_name;
             var index = _lodash2.default.findIndex(score_arr, function (rest) {
               return rest.name == name_scoreb_a;
             });
@@ -66772,10 +66791,29 @@ var Homepage = function (_Component) {
             }
           }
       });
+
       //sorted the scoreboard arrat ascending
       score_arr = score_arr.sort(function (a, b) {
         return a.score < b.score;
       });
+
+      //set the inital ranking to 1
+      if (score_arr[0]) {
+        var ranking = 1;
+        score_arr[0].rank = ranking;
+        for (var index = 1; index < score_arr.length; index++) {
+          var score_rest_prev = score_arr[index];
+          var score_rest_cur = score_arr[index - 1];
+          if (score_rest_cur.score == score_rest_prev.score) {
+            score_arr[index].rank = ranking;
+            ranking++;
+          } else {
+            ranking++;
+            score_arr[index].rank = ranking;
+          }
+        }
+      }
+
       return _react2.default.createElement(
         "table",
         { className: "table table-hover" },
@@ -66785,6 +66823,11 @@ var Homepage = function (_Component) {
           _react2.default.createElement(
             "tr",
             null,
+            _react2.default.createElement(
+              "th",
+              null,
+              "Rank"
+            ),
             _react2.default.createElement(
               "th",
               null,
@@ -67820,7 +67863,12 @@ var RestaurantsShow = function (_Component) {
             className: "btn btn-danger pull-xs-right",
             onClick: this.onDeleteClick.bind(this)
           },
-          "Delete Post"
+          "Delete Restaurant"
+        ),
+        _react2.default.createElement(
+          _reactRouterDom.Link,
+          { className: "btn btn-primary pull-xs-right", to: "/restaurants/" + this.props.match.params.id + "/edit" },
+          "Edit Restaurant"
         ),
         _react2.default.createElement(
           "h1",
@@ -67874,6 +67922,173 @@ exports.default = (0, _reduxForm.reduxForm)({
 })((0, _reactRedux.connect)(mapStateToProps, {
   fetchRestaurant: _action_restaurants.fetchRestaurant, deleteRestaurant: _action_restaurants.deleteRestaurant, createVote_for: _action_votes.createVote_for, createVote_against: _action_votes.createVote_against
 })(RestaurantsShow));
+
+/***/ }),
+/* 628 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(4);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reduxForm = __webpack_require__(55);
+
+var _reactRouterDom = __webpack_require__(54);
+
+var _reactRedux = __webpack_require__(16);
+
+var _action_restaurants = __webpack_require__(64);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var RestaurantsEdit = function (_Component) {
+  _inherits(RestaurantsEdit, _Component);
+
+  function RestaurantsEdit() {
+    _classCallCheck(this, RestaurantsEdit);
+
+    return _possibleConstructorReturn(this, (RestaurantsEdit.__proto__ || Object.getPrototypeOf(RestaurantsEdit)).apply(this, arguments));
+  }
+
+  _createClass(RestaurantsEdit, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      this.props.initialize({
+        name: this.props.restaurant.name,
+        address: this.props.restaurant.address
+      });
+    }
+  }, {
+    key: "renderField",
+    value: function renderField(field) {
+      // this is used to abbreviate field.meta.touched to touched
+      var _field$meta = field.meta,
+          touched = _field$meta.touched,
+          error = _field$meta.error;
+      //if user finish, there will be validate check
+
+      var className = "form-group " + (touched && error ? "has-danger" : "");
+
+      return _react2.default.createElement(
+        "div",
+        { className: className },
+        _react2.default.createElement(
+          "label",
+          null,
+          field.label
+        ),
+        _react2.default.createElement("input", _extends({ className: "form-control", type: "text" }, field.input)),
+        _react2.default.createElement(
+          "div",
+          { className: "text-help" },
+          touched ? error : ""
+        )
+      );
+    }
+
+    //values is just what users just wrote on the website
+
+  }, {
+    key: "onSubmit",
+    value: function onSubmit(values) {
+      var _this2 = this;
+
+      // submit button and go back to index using callback
+      this.props.editRestaurant(this.props.match.params.id, values, function () {
+        _this2.props.history.go(-1);
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      // the handleSubmit is passed to this component's props by Reduxform
+      // connection to this file in the bottom of the file
+      var _props = this.props,
+          handleSubmit = _props.handleSubmit,
+          history = _props.history,
+          restaurant = _props.restaurant;
+
+      return (
+        // when reduxform use handleSubmit to check everything and then
+        // use onsubmit to call "createRestaurant" to post
+        _react2.default.createElement(
+          "form",
+          { onSubmit: handleSubmit(this.onSubmit.bind(this)) },
+          _react2.default.createElement(_reduxForm.Field
+          // some attribute of field which can be used
+          , { label: "Name For Restaurants",
+            name: "name"
+            // this is were it interacts with the user
+            , component: this.renderField
+          }),
+          _react2.default.createElement(_reduxForm.Field, {
+            label: "Address of Restaurants",
+            name: "address",
+            component: this.renderField
+          }),
+          _react2.default.createElement(
+            "button",
+            { type: "submit", className: "btn btn-primary" },
+            "Submit"
+          ),
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: "/restaurants/" + this.props.match.params.id, className: "btn btn-danger" },
+            "Cancel"
+          )
+        )
+      );
+    }
+  }]);
+
+  return RestaurantsEdit;
+}(_react.Component);
+
+function validate(values) {
+  // console.log(values) -> { title: 'asdf', categories: 'asdf', content: 'asdf' }
+  var errors = {};
+
+  // Validate the inputs from 'values'
+  if (!values.name) {
+    errors.name = "Enter a name";
+  }
+  if (!values.address) {
+    errors.address = "Enter the address";
+  }
+
+  // If errors is empty, the form is fine to submit
+  // If errors has *any* properties, redux form assumes form is invalid
+  return errors;
+}
+
+function mapStateToProps(_ref, ownProps) {
+  var restaurants = _ref.restaurants;
+
+  return { restaurant: restaurants[ownProps.match.params.id] };
+}
+
+exports.default = (0, _reduxForm.reduxForm)({
+  //these are configurations for reduxform
+  validate: validate,
+  form: "RestaurantsEditForm" // name of the form
+})((0, _reactRedux.connect)(mapStateToProps, { editRestaurant: _action_restaurants.editRestaurant })(RestaurantsEdit));
 
 /***/ })
 /******/ ]);

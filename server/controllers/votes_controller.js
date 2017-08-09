@@ -125,9 +125,9 @@ module.exports = {
         var new_vote = Vote({ 
             name: vote.name,
             date: new Date(),
-            agree: [vote.name_restaurant,vote.id_restaurant],
-            disagree:["",""],
-            restaurant_id : vote.id_restaurant
+            action: "agree",
+            restaurant_id : vote.id_restaurant,
+            restaurant_name : vote.name_restaurant
         });
 
         new_vote.save((err) => {
@@ -137,25 +137,26 @@ module.exports = {
         });
         
         res.sendStatus(200);
-        res.send("Success");
+
     },
 
-    create_against(req,res){
+    create_against(req,res){2
         var vote = req.body;
         var new_vote = Vote({ 
             name: vote.name,
             date: new Date(),
-            agree : ["",""],
-            disagree:[vote.name_restaurant,vote.id_restaurant],
-            restaurant_id : vote.id_restaurant
+            action: "disagree",
+            restaurant_id : vote.id_restaurant,
+            restaurant_name : vote.name_restaurant
         });
 
         new_vote.save((err) => {
             if (err) throw err;
+
             console.log('vote saved!');
         });
  
         res.sendStatus(200);
-        res.send("Success");
+
     }
 }

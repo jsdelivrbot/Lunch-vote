@@ -35,20 +35,14 @@ class Homepage extends Component {
           <td>{vote.name}</td>
           <td>
             {(() => {
-              switch (vote.agree[0]) {
-                case "" : return <font color="red">Against</font>;
-                default : return <font color="green">For</font>;
+              switch (vote.action) {
+                case "disagree" : return <font color="red">Against</font>;
+                case "agree" : return <font color="green">For</font>;
+                case "default" : return error
               }
             })()}
           </td>
-          <td>
-            {(() => {
-              switch (vote.agree[0]) {
-                case "" : return vote.disagree[0];
-                default : return vote.agree[0];
-              }
-            })()}
-          </td>
+          <td>{vote.restaurant_name}</td>
           <td>
             <Moment format="YYYY/MM/DD HH:mm:ss">{vote.date}</Moment>
           </td>
@@ -79,6 +73,7 @@ class Homepage extends Component {
     return _.map(score_arr, score_res => {
       return (
         <tr key={score_res.name}>
+          <td>{score_res.rank}</td>
           <td>{score_res.name}</td>
           <td>{score_res.score}</td>
         </tr>
@@ -90,8 +85,8 @@ class Homepage extends Component {
     var score_arr = [];
     _.map(this.props.votes, vote => {
       //when it is For
-      if(vote.agree[0] == ""){
-          var name_scoreb_d = vote.disagree[0];
+      if(vote.action == "disagree"){
+          var name_scoreb_d = vote.restaurant_name;
           var index = _.findIndex(score_arr,
                     function(rest) { return rest.name == name_scoreb_d; });
           //means this element is not in the array
@@ -105,7 +100,7 @@ class Homepage extends Component {
       }
       //when is is Against
       else{
-        var name_scoreb_a = vote.agree[0];
+        var name_scoreb_a = vote.restaurant_name;
         var index = _.findIndex(score_arr,
                   function(rest) { return rest.name == name_scoreb_a; });
         if(index == -1){
@@ -117,23 +112,44 @@ class Homepage extends Component {
         }
       }
     });
+
     //sorted the scoreboard arrat ascending
     score_arr = score_arr.sort((a,b) => {
        return a.score < b.score;
     })
-      return (
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <th>Restaurant</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.renderScores(score_arr)}
-          </tbody>
-        </table>
-    );
+
+    //set the inital ranking to 1
+    if(score_arr[0]){
+      var ranking = 1;
+      score_arr[0].rank = ranking;
+      for(var index = 1; index < score_arr.length; index ++){
+        var score_rest_prev = score_arr[index];
+        var score_rest_cur = score_arr[index-1];
+        if(score_rest_cur.score == score_rest_prev.score){
+          score_arr[index].rank = ranking;
+          ranking ++;
+        }
+        else{
+          ranking ++;
+          score_arr[index].rank = ranking;
+        }
+      }
+    }
+
+    return (
+      <table className="table table-hover">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Restaurant</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.renderScores(score_arr)}
+        </tbody>
+      </table>
+  );
   }
 
   render() {

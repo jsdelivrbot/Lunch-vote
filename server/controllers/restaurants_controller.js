@@ -32,7 +32,7 @@ module.exports = {
         });
         
         res.sendStatus(200);
-        res.send("Success");
+
     },
 
     delete(req,res){
@@ -62,4 +62,30 @@ module.exports = {
                 }
         });
     },
+
+    edit(req,res){
+        var restaurant_id = req.params.id;
+        const restaurantProps = req.body;
+
+        Restaurant.update({ _id: restaurant_id }, restaurantProps, 
+                function(err,restaurant){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        console.log("Update Successfully");
+                    }
+                })
+        //change all the vote related to this restaurant
+        Vote.find({"restaurant_id" : restaurant_id }).exec()
+          .then((doc) =>
+            {
+              for(var index = 0;index < doc.length;index ++){
+                doc[index].restaurant_name = restaurantProps.name;
+                doc[index].save();
+              }
+            }
+        );
+
+        res.sendStatus(200);
+    }
 }

@@ -5,6 +5,7 @@ export const FETCH_RESTAURANTS = "fetch_restaurants";
 export const FETCH_RESTAURANT = "fetch_restaurant";
 export const CREATE_RESTAURANT  = "create_restaurant";
 export const DELETE_RESTAURANT  = "delete_restaurant";
+export const EDIT_RESTAURANT  = "edit_restaurant";
 
 //the online post,get,delete request url
 const ROOT_URL = "https://vote-lunch.herokuapp.com/api";
@@ -49,6 +50,17 @@ export function deleteRestaurant(id, callback) {
 
   return {
     type: DELETE_RESTAURANT,
+    payload: id
+  };
+}
+
+export function editRestaurant(id, values, callback) {
+  const request = axios
+    .put(`${ROOT_URL}/restaurants/${id}/edit`,values)
+    .then(() => callback());
+
+  return {
+    type: EDIT_RESTAURANT,
     payload: id
   };
 }

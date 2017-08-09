@@ -92,8 +92,12 @@ class RestaurantsShow extends Component {
           className="btn btn-danger pull-xs-right"
           onClick={this.onDeleteClick.bind(this)}
         >
-          Delete Post
+          Delete Restaurant
         </button>
+        <Link className="btn btn-primary pull-xs-right" to=
+                {`/restaurants/${this.props.match.params.id}/edit`}>
+          Edit Restaurant
+        </Link>
         <h1>Name : {restaurant.name}</h1>
         <h1>Address: {restaurant.address}</h1>
         <Field
@@ -109,7 +113,7 @@ class RestaurantsShow extends Component {
 }
 
 function mapStateToProps({ restaurants }, ownProps) {
-  return { restaurant: restaurants[ownProps.match.params.id] };
+  return {restaurant: restaurants[ownProps.match.params.id] };
 }
 
 function validate(values) {
@@ -128,7 +132,7 @@ function validate(values) {
 
 export default reduxForm({
   validate,
-  form: "VotesNewForm"
+  form : "VotesNewForm"
 })(connect(mapStateToProps, {
   fetchRestaurant, deleteRestaurant,createVote_for,createVote_against
 })(RestaurantsShow));

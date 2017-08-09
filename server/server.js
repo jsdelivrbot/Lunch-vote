@@ -32,4 +32,4 @@ app.get('/',function (req,res){
 
 routes(app);
 
-app.listen(port)
+app.listen(port);
