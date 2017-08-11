@@ -36,6 +36,7 @@ export class GoogleMap_show extends Component {
       var placeLoc = place.geometry.location;
       var lat = placeLoc.lat();
       var lng = placeLoc.lng();
+      map.setCenter(placeLoc);
       var content_string = '';
       var marker = new google.maps.Marker({
         map: map,

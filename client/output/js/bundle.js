@@ -68174,6 +68174,7 @@ var GoogleMap_show = exports.GoogleMap_show = function (_Component) {
         var placeLoc = place.geometry.location;
         var lat = placeLoc.lat();
         var lng = placeLoc.lng();
+        map.setCenter(placeLoc);
         var content_string = '';
         var marker = new google.maps.Marker({
           map: map,
