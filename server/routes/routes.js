@@ -7,6 +7,7 @@ module.exports = (app) => {
   app.get('/api/restaurants/:id', RestaurantsController.view);
   app.delete('/api/restaurants/:id', RestaurantsController.delete);
   app.get('/api/restaurants', RestaurantsController.index);
+  app.post('/api/restaurants-google', RestaurantsController.create_google);
 
   app.post('/api/votes/for', VotesController.create_for);
   app.post('/api/votes/against', VotesController.create_against);

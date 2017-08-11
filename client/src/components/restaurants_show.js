@@ -4,6 +4,7 @@ import { Field, reduxForm } from "redux-form";
 import { Link } from "react-router-dom";
 import { fetchRestaurant, deleteRestaurant } from "../actions/action_restaurants";
 import { createVote_for, createVote_against } from "../actions/action_votes";
+import { GoogleMap_show } from "./google_map";
 
 class RestaurantsShow extends Component {
   renderField(field) {
@@ -107,6 +108,7 @@ class RestaurantsShow extends Component {
         />
         {this.renderSubmit_for()}
         {this.renderSubmit_against()}
+        <GoogleMap_show name = {restaurant.name} address = {restaurant.address} />
       </div>
     );
   }

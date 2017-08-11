@@ -6,10 +6,9 @@ import { Link } from "react-router-dom";
 import { fetchRestaurants } from "../actions/action_restaurants";
 import { fetchVotes } from "../actions/action_votes";
 import Moment from 'react-moment';
+import { GoogleMap_search } from "./google_map";
 
 class Homepage extends Component {
-  // when this component is showed in the DOM, immediately this method will
-  // be called. Thus, we can fetch the data when user go to that page.
   componentDidMount() {
     this.props.fetchRestaurants();
     this.props.fetchVotes();
@@ -163,6 +162,7 @@ class Homepage extends Component {
             Add a Restaurant
           </Link>
         </div>
+        <GoogleMap_search />
         <h3>Restaurants</h3>
         <ul className="list-group">
           {/* in order to show the list of restaurant*/}

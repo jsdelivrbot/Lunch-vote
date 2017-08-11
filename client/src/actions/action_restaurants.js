@@ -64,3 +64,9 @@ export function editRestaurant(id, values, callback) {
     payload: id
   };
 }
+
+export function addRestaurant_google(values, callback) {
+  const request = axios
+    .post(`${ROOT_URL}/restaurants-google`,values)
+    .then(() => callback());
+}

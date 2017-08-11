@@ -1,5 +1,8 @@
 const Restaurant = require('../db/Restaurant.js')
 const Vote= require('../db/Vote.js');
+const request = require('request')
+const APIKEY_geocode = 'AIzaSyAI9YglLGrKtH8kTHaIVb1H_c_h206eOv8';
+const APIKEY_search = 'AIzaSyC_-bl7-_WVyoBBlhiyUXBi_Dbxex6NWPM';
 
 module.exports = {
 
@@ -15,6 +18,37 @@ module.exports = {
        });
     },
 
+    create_google(req,res){
+        var restaurant = req.body;
+        var lat = restaurant.lat;
+        var lng = restaurant.lng;
+        var url_geocode = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${APIKEY_geocode}`
+        request.get(url_geocode,function(error,response,body){
+            console.log('error:',error);
+            console.log('statusCode:',response && response.statusCode);
+            var body = JSON.parse(body);
+            var placeId = body.results[0].place_id
+            var url_detail = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=1&type=restaurant&key=${APIKEY_search}`
+            request.get(url_detail,function(error,response,body){
+                    console.log('error:',error);
+                    console.log('statusCode:',response && response.statusCode);
+                    var body = JSON.parse(body);
+                    var new_restaurant = Restaurant({
+                        name: body.results[0].name,
+                        address: body.results[0].vicinity
+                    });
+        
+                    //save the new restaurant to Mongodb
+                    new_restaurant.save((err) => {
+                        if (err) throw err;
+        
+                        console.log('restaurant saved!');
+                    });
+            })
+        })
+        res.sendStatus(200);
+    },
+        
     // ES6 version of create : function(req,res)
     create(req,res){
         //get the information from the website

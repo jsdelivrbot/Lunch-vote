@@ -9216,6 +9216,7 @@ exports.createRestaurant = createRestaurant;
 exports.fetchRestaurant = fetchRestaurant;
 exports.deleteRestaurant = deleteRestaurant;
 exports.editRestaurant = editRestaurant;
+exports.addRestaurant_google = addRestaurant_google;
 
 var _axios = __webpack_require__(190);
 
@@ -9287,6 +9288,12 @@ function editRestaurant(id, values, callback) {
     type: EDIT_RESTAURANT,
     payload: id
   };
+}
+
+function addRestaurant_google(values, callback) {
+  var request = _axios2.default.post(ROOT_URL + "/restaurants-google", values).then(function () {
+    return callback();
+  });
 }
 
 /***/ }),
@@ -66599,6 +66606,8 @@ var _reactMoment = __webpack_require__(624);
 
 var _reactMoment2 = _interopRequireDefault(_reactMoment);
 
+var _google_map = __webpack_require__(629);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -66618,9 +66627,6 @@ var Homepage = function (_Component) {
 
   _createClass(Homepage, [{
     key: "componentDidMount",
-
-    // when this component is showed in the DOM, immediately this method will
-    // be called. Thus, we can fetch the data when user go to that page.
     value: function componentDidMount() {
       this.props.fetchRestaurants();
       this.props.fetchVotes();
@@ -66863,6 +66869,7 @@ var Homepage = function (_Component) {
             "Add a Restaurant"
           )
         ),
+        _react2.default.createElement(_google_map.GoogleMap_search, null),
         _react2.default.createElement(
           "h3",
           null,
@@ -67714,6 +67721,8 @@ var _action_restaurants = __webpack_require__(45);
 
 var _action_votes = __webpack_require__(114);
 
+var _google_map = __webpack_require__(629);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -67889,7 +67898,8 @@ var RestaurantsShow = function (_Component) {
           component: this.renderField
         }),
         this.renderSubmit_for(),
-        this.renderSubmit_against()
+        this.renderSubmit_against(),
+        _react2.default.createElement(_google_map.GoogleMap_show, { name: restaurant.name, address: restaurant.address })
       );
     }
   }]);
@@ -68090,6 +68100,203 @@ exports.default = (0, _reduxForm.reduxForm)({
   validate: validate,
   form: "RestaurantsEditForm" // name of the form
 })((0, _reactRedux.connect)(mapStateToProps, { editRestaurant: _action_restaurants.editRestaurant })(RestaurantsEdit));
+
+/***/ }),
+/* 629 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.GoogleMap_search = exports.GoogleMap_show = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _action_restaurants = __webpack_require__(45);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var GoogleMap_show = exports.GoogleMap_show = function (_Component) {
+  _inherits(GoogleMap_show, _Component);
+
+  function GoogleMap_show() {
+    _classCallCheck(this, GoogleMap_show);
+
+    return _possibleConstructorReturn(this, (GoogleMap_show.__proto__ || Object.getPrototypeOf(GoogleMap_show)).apply(this, arguments));
+  }
+
+  _createClass(GoogleMap_show, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      //this is the defaule place of the company
+      var evebyeve_location = { lat: 34.0874994, lng: -118.1482477
+        //this is the main map that I created
+      };var map = new google.maps.Map(this.refs.map, {
+        zoom: 18,
+        center: evebyeve_location
+      });
+
+      var infowindow = new google.maps.InfoWindow();
+      //Search through the map just created
+      var service = new google.maps.places.PlacesService(map);
+      //this is used to search for query text
+      service.textSearch({
+        location: evebyeve_location,
+        radius: 500,
+        query: this.props.name + " " + this.props.address
+      }, callback);
+
+      //add marker to the map
+      function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+          }
+        }
+      }
+
+      //create marker and add it to the map
+      function createMarker(place) {
+        var placeId = place.place_id;
+        var placeLoc = place.geometry.location;
+        var lat = placeLoc.lat();
+        var lng = placeLoc.lng();
+        var content_string = '';
+        var marker = new google.maps.Marker({
+          map: map,
+          position: place.geometry.location
+        });
+        //display the detail of the restaurant
+        service.getDetails({
+          placeId: placeId
+        }, function (place, status) {
+          //specific way to display it through google map;
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            //In case the restaurant does not has its owen website
+            var name_search = encodeURIComponent(place.name);
+            var google_map_url = "https://www.google.com/maps/search/?api=1&query=" + name_search;
+            if (place.website) {
+              content_string = '<div><strong>' + place.name + '</strong>' + '<br>' + 'Place address: ' + place.formatted_address + '<br>' + '<br>' + 'Phone number: ' + place.formatted_phone_number + '<br>' + '<br><a href=' + google_map_url + '>' + "View in google Map" + '</a><br>' + '<br><a href=' + place.website + '>' + "View in website" + '</a><br>';
+            } else {
+              content_string = '<div><strong>' + place.name + '</strong>' + '<br>' + 'Place address: ' + place.formatted_address + '<br>' + '<br>' + 'Phone number: ' + place.formatted_phone_number + '<br>' + '<br><a href=' + google_map_url + '>' + "View in google Map" + '</a><br>';
+            }
+            //show the info through the marker
+            google.maps.event.addListener(marker, 'click', function () {
+              infowindow.setContent(content_string);
+              infowindow.open(map, this);
+            });
+          }
+        });
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var mapStyle = {
+        height: '500px',
+        width: '500px'
+      };
+
+      return _react2.default.createElement("div", { ref: "map", style: mapStyle });
+    }
+  }]);
+
+  return GoogleMap_show;
+}(_react.Component);
+
+var GoogleMap_search = exports.GoogleMap_search = function (_Component2) {
+  _inherits(GoogleMap_search, _Component2);
+
+  function GoogleMap_search() {
+    _classCallCheck(this, GoogleMap_search);
+
+    return _possibleConstructorReturn(this, (GoogleMap_search.__proto__ || Object.getPrototypeOf(GoogleMap_search)).apply(this, arguments));
+  }
+
+  _createClass(GoogleMap_search, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      //this is the defaule place of the company
+      var evebyeve_location = { lat: 34.0874994, lng: -118.1482477
+        //this is the main map that I created
+      };var map = new google.maps.Map(this.refs.map, {
+        zoom: 14,
+        center: evebyeve_location
+      });
+
+      var infowindow = new google.maps.InfoWindow();
+      //Search through the map just created
+      var service = new google.maps.places.PlacesService(map);
+      //this is used to search for query text
+      service.radarSearch({
+        location: evebyeve_location,
+        radius: 5000,
+        keyword: "lunch",
+        openNow: true
+      }, callback);
+
+      //add marker to the map
+      function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+          }
+        }
+      }
+
+      function onSubmit(values) {
+        var _this3 = this;
+
+        (0, _action_restaurants.addRestaurant_google)(values, function () {
+          _this3.props.history.push("/");
+        });
+      }
+
+      //create marker and add it to the map
+      function createMarker(place) {
+        var placeId = place.place_id;
+        var placeLoc = place.geometry.location;
+        var lat = placeLoc.lat();
+        var lng = placeLoc.lng();
+        var content_string = '';
+        var marker = new google.maps.Marker({
+          map: map,
+          position: place.geometry.location
+        });
+        var google_map_url = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng + "&query_place_id=" + placeId;
+        google.maps.event.addListener(marker, 'click', function () {
+          infowindow.setContent('<strong><center><a href=' + google_map_url + '>' + "View in google Map" + '</a></center></strong>' + '<div><form onSubmit={' + onSubmit({ lat: lat, lng: lng }) + '}><button type=submit' + 'className=btn btn-primary' + '>Add this restaurant</button></form></div>');
+          infowindow.open(map, this);
+        });
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var mapStyle = {
+        height: '500px',
+        width: '1000px'
+      };
+
+      return _react2.default.createElement("div", { ref: "map", style: mapStyle });
+    }
+  }]);
+
+  return GoogleMap_search;
+}(_react.Component);
 
 /***/ })
 /******/ ]);
