@@ -128,7 +128,6 @@ export class GoogleMap_search extends Component {
       var placeLoc = place.geometry.location;
       var lat = placeLoc.lat();
       var lng = placeLoc.lng();
-      var content_string = '';
       var marker = new google.maps.Marker({
         map: map,
         position: place.geometry.location

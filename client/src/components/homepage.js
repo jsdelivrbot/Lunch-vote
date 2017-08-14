@@ -162,7 +162,7 @@ class Homepage extends Component {
             Add a Restaurant
           </Link>
         </div>
-        <GoogleMap_search />
+        {/* <GoogleMap_search /> */}
         <h3>Restaurants</h3>
         <ul className="list-group">
           {/* in order to show the list of restaurant*/}
